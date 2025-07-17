@@ -46,6 +46,11 @@ class Registrasi extends Model
         return $this->hasMany(Inventarisasi::class, 'koleksi_id');
     }
 
+    public function cekKondisiKoleksis()
+    {
+        return $this->hasMany(CekKondisiKoleksi::class, 'koleksi_id');
+    }
+
     /**
      * Get the available options for cara_perolehan
      */
@@ -66,7 +71,7 @@ class Registrasi extends Model
     public static function generateRegistrasiId($tahun = null)
     {
         $tahun = $tahun ?? date('Y');
-        
+
         // Ambil nomor terakhir untuk tahun yang sama
         $lastNumber = self::where('tahun', $tahun)
             ->orderBy('registrasi_id', 'desc')
@@ -113,7 +118,7 @@ class Registrasi extends Model
     public function getFormattedNamaKoleksiAttribute()
     {
         $nama = $this->nama_koleksi;
-        
+
         // Cek apakah ini batuan dan tambahkan jenis batuan jika ada
         if (stripos($nama, 'batu') !== false || stripos($nama, 'batuan') !== false) {
             $jenisBatuan = ['sedimen', 'beku', 'metamorf'];
@@ -123,7 +128,7 @@ class Registrasi extends Model
                 }
             }
         }
-        
+
         return $nama;
     }
 

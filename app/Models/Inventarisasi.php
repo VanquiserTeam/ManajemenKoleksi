@@ -36,6 +36,11 @@ class Inventarisasi extends Model
         return $this->belongsTo(Registrasi::class, 'koleksi_id');
     }
 
+    public function cekKondisiKoleksis()
+    {
+        return $this->hasMany(CekKondisiKoleksi::class, 'inventarisasi_id');
+    }
+
     /**
      * Legacy relasi untuk backward compatibility
      */
@@ -122,7 +127,7 @@ class Inventarisasi extends Model
     public static function generateNomorInventarisasi($jenisKoleksi, $tahun = null)
     {
         $tahun = $tahun ?? date('Y');
-        
+
         // Ambil nomor terakhir untuk jenis dan tahun yang sama
         $lastNumber = self::where('jenis_koleksi', $jenisKoleksi)
             ->whereYear('created_at', $tahun)
