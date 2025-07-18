@@ -36,6 +36,14 @@ class Inventarisasi extends Model
         return $this->belongsTo(Registrasi::class, 'koleksi_id');
     }
 
+    /**
+     * Relasi dengan jenis koleksi
+     */
+    public function jenisKoleksiDetail()
+    {
+        return $this->belongsTo(JenisKoleksi::class, 'jenis_koleksi', 'kode');
+    }
+
     public function cekKondisiKoleksis()
     {
         return $this->hasMany(CekKondisiKoleksi::class, 'inventarisasi_id');
@@ -83,18 +91,8 @@ class Inventarisasi extends Model
      */
     public static function getJenisKoleksiOptions(): array
     {
-        return [
-            '01' => '01 - Geologika',
-            '02' => '02 - Biologika',
-            '03' => '03 - Etnografika',
-            '04' => '04 - Arkeologika',
-            '05' => '05 - Historika',
-            '06' => '06 - Numismatika',
-            '07' => '07 - Filologika',
-            '08' => '08 - Keramonologika',
-            '09' => '09 - Seni Rupa',
-            '10' => '10 - Teknologika',
-        ];
+        // Menggunakan data dari tabel jenis_koleksis
+        return JenisKoleksi::getOptionsArray();
     }
 
     /**

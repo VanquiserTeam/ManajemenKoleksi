@@ -3,50 +3,42 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inventarisasi;
+use App\Models\JenisKoleksi;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        // Mengambil jenis koleksi dari model Inventarisasi
-        $jenisKoleksiOptions = Inventarisasi::getJenisKoleksiOptions();
+        // Mengambil semua jenis koleksi aktif dari database dengan jumlah koleksi
+        $jenisKoleksiData = JenisKoleksi::aktif()
+            ->withCount('inventarisasis')
+            ->orderBy('kode')
+            ->get();
 
-        // Menghitung jumlah koleksi berdasarkan jenis dari inventarisasi
-        $jenisKoleksi = [];
-        foreach ($jenisKoleksiOptions as $kode => $label) {
-            // Mengambil nama jenis koleksi tanpa kode (contoh: "01 - Geologika" menjadi "Geologika")
-            $namaJenis = trim(explode(' - ', $label)[1]);
-            $jenisKoleksi[$namaJenis] = Inventarisasi::where('jenis_koleksi', $kode)->count();
-        }
-
-        return view('home', compact('jenisKoleksi'));
+        return view('home', compact('jenisKoleksiData'));
     }
 
     public function showByJenis($jenis)
     {
-        // Mapping nama jenis ke kode
-        $jenisKoleksiOptions = Inventarisasi::getJenisKoleksiOptions();
-        $kodeJenis = null;
+        // Normalisasi nama jenis untuk pencarian
+        $jenisNormalized = str_replace(['-', '_'], ' ', $jenis);
 
-        foreach ($jenisKoleksiOptions as $kode => $label) {
-            $namaJenis = trim(explode(' - ', $label)[1]);
-            if (strtolower($namaJenis) === strtolower($jenis)) {
-                $kodeJenis = $kode;
-                break;
-            }
-        }
+        // Cari jenis koleksi berdasarkan nama (case insensitive)
+        $jenisKoleksiData = JenisKoleksi::aktif()
+            ->whereRaw('LOWER(nama) = ?', [strtolower($jenisNormalized)])
+            ->first();
 
-        if (!$kodeJenis) {
+        if (!$jenisKoleksiData) {
             abort(404, 'Jenis koleksi tidak ditemukan');
         }
 
-        $inventarisasi = Inventarisasi::with('registrasi')
-            ->where('jenis_koleksi', $kodeJenis)
+        $inventarisasi = Inventarisasi::with(['registrasi', 'jenisKoleksiDetail'])
+            ->where('jenis_koleksi', $jenisKoleksiData->kode)
             ->paginate(12);
 
-        $jenisNama = trim(explode(' - ', $jenisKoleksiOptions[$kodeJenis])[1]);
+        $jenisNama = $jenisKoleksiData->nama;
 
-        return view('koleksi.jenis', compact('inventarisasi', 'jenisNama', 'jenis'));
+        return view('koleksi.jenis', compact('inventarisasi', 'jenisNama', 'jenis', 'jenisKoleksiData'));
     }
 }

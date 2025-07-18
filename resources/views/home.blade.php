@@ -17,7 +17,7 @@
     <style>
         body {
             font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #66ea8e 0%, #95a24b 100%);
+            background: linear-gradient(135deg, #2ecc71 0%, #f39c12 100%);
             min-height: 100vh;
         }
         .main-wrapper {
@@ -49,11 +49,11 @@
             background: linear-gradient(135deg, #ffffff, #ebebeb);
             width: 80px;
             height: 80px;
-            /* border-radius: 50%; */
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 20px rgba(46,204,113,0.3);
         }
         .card-collection {
             border: none;
@@ -72,7 +72,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #dcebb9, #dad37e, #93fbd0, #5789f5);
+            background: linear-gradient(90deg, #2ecc71, #27ae60, #f39c12, #e67e22);
         }
         .card-collection:hover {
             transform: translateY(-10px) scale(1.02);
@@ -84,7 +84,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2ecc71 0%, #f39c12 100%);
             margin: 15px;
             border-radius: 15px;
             position: relative;
@@ -117,7 +117,7 @@
             position: relative;
         }
         .collection-title {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #27ae60 0%, #e67e22 100%);
             color: white;
             margin: 0 15px 15px 15px;
             padding: 10px;
@@ -127,7 +127,7 @@
         .collection-count {
             font-size: 2rem;
             font-weight: bold;
-            color: #2c3e50;
+            color: #27ae60;
             margin-bottom: 15px;
         }
         .nav-modern {
@@ -163,7 +163,7 @@
             transform: translateY(-3px);
         }
         .footer-section {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #27ae60 0%, #e67e22 100%);
             color: white;
             padding: 40px 0;
             margin-top: 50px;
@@ -171,7 +171,7 @@
         }
         .section-divider {
             height: 2px;
-            background: linear-gradient(90deg, transparent, #667eea, #764ba2, transparent);
+            background: linear-gradient(90deg, transparent, #2ecc71, #f39c12, transparent);
             margin: 30px 0;
         }
     </style>
@@ -187,7 +187,7 @@
                         <div class="col-auto">
                             <div class="museum-logo">
                                 {{-- <i class="fas fa-seedling fa-2x text-white"></i> --}}
-                                <img src="{{ asset('assets/img/logo-museum-fr.png') }}" alt="Museum Logo" class="img-fluid">
+                                <img src="{{ asset('assets/img/logo-fr.png') }}" alt="Museum Logo" class="img-fluid">
                             </div>
                         </div>
                         <div class="col">
@@ -206,9 +206,7 @@
                             <a href="#" class="btn btn-outline-light"><i class="fab fa-twitter"></i></a>
                             <a href="#" class="btn btn-outline-light"><i class="fab fa-youtube"></i></a>
                         </div>
-                        <a href="/admin" class="btn btn-warning btn-lg px-4 py-2 rounded-pill fw-bold">
-                            <i class="fas fa-cogs me-2"></i>Admin Panel
-                        </a>
+
                     </div>
                 </div>
             </div>
@@ -254,107 +252,32 @@
 
             <!-- Collection Grid -->
             <div class="row g-4">
-                <!-- Row 1 -->
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                    <a href="{{ route('koleksi.jenis', 'geologika') }}" class="card-collection d-block text-decoration-none">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-mountain"></i>
-                        </div>
-                        <div class="collection-title text-center">Geologika</div>
-                        <div class="collection-count text-center">{{ $jenisKoleksi['Geologika'] }}</div>
-                    </a>
-                </div>
+                @php
+                $icons = [
+                    'Geologika' => 'fas fa-mountain',
+                    'Biologika' => 'fas fa-leaf',
+                    'Etnografika' => 'fas fa-users',
+                    'Arkeologika' => 'fas fa-monument',
+                    'Historika' => 'fas fa-scroll',
+                    'Numismatika' => 'fas fa-coins',
+                    'Filologika' => 'fas fa-book-open',
+                    'Keramonologika' => 'fas fa-wine-bottle',
+                    'Seni Rupa' => 'fas fa-palette',
+                    'Teknologika' => 'fas fa-cogs',
+                ];
+                @endphp
 
+                @foreach($jenisKoleksiData as $jenis)
                 <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                    <a href="{{ route('koleksi.jenis', 'biologika') }}" class="card-collection d-block text-decoration-none">
+                    <a href="{{ route('koleksi.jenis', str_replace(' ', '-', strtolower($jenis->nama))) }}" class="card-collection d-block text-decoration-none" title="{{ $jenis->deskripsi }}">
                         <div class="icon-wrapper">
-                            <i class="fas fa-leaf"></i>
+                            <i class="{{ $icons[$jenis->nama] ?? 'fas fa-archive' }}"></i>
                         </div>
-                        <div class="collection-title text-center">Biologika</div>
-                        <div class="collection-count text-center">{{ $jenisKoleksi['Biologika'] }}</div>
+                        <div class="collection-title text-center">{{ $jenis->nama }}</div>
+                        <div class="collection-count text-center">{{ $jenis->inventarisasis_count }}</div>
                     </a>
                 </div>
-
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                    <a href="{{ route('koleksi.jenis', 'etnografika') }}" class="card-collection d-block text-decoration-none">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="collection-title text-center">Etnografika</div>
-                        <div class="collection-count text-center">{{ $jenisKoleksi['Etnografika'] }}</div>
-                    </a>
-                </div>
-
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                    <a href="{{ route('koleksi.jenis', 'arkeologika') }}" class="card-collection d-block text-decoration-none">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-monument"></i>
-                        </div>
-                        <div class="collection-title text-center">Arkeologika</div>
-                        <div class="collection-count text-center">{{ $jenisKoleksi['Arkeologika'] }}</div>
-                    </a>
-                </div>
-
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                    <a href="{{ route('koleksi.jenis', 'historika') }}" class="card-collection d-block text-decoration-none">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-scroll"></i>
-                        </div>
-                        <div class="collection-title text-center">Historika</div>
-                        <div class="collection-count text-center">{{ $jenisKoleksi['Historika'] }}</div>
-                    </a>
-                </div>
-
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                    <a href="{{ route('koleksi.jenis', 'numismatika') }}" class="card-collection d-block text-decoration-none">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-coins"></i>
-                        </div>
-                        <div class="collection-title text-center">Numismatika</div>
-                        <div class="collection-count text-center">{{ $jenisKoleksi['Numismatika'] }}</div>
-                    </a>
-                </div>
-
-                <!-- Row 2 -->
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                    <a href="{{ route('koleksi.jenis', 'filologika') }}" class="card-collection d-block text-decoration-none">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-book-open"></i>
-                        </div>
-                        <div class="collection-title text-center">Filologika</div>
-                        <div class="collection-count text-center">{{ $jenisKoleksi['Filologika'] }}</div>
-                    </a>
-                </div>
-
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                    <a href="{{ route('koleksi.jenis', 'keramonologika') }}" class="card-collection d-block text-decoration-none">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-wine-bottle"></i>
-                        </div>
-                        <div class="collection-title text-center">Keramonologika</div>
-                        <div class="collection-count text-center">{{ $jenisKoleksi['Keramonologika'] }}</div>
-                    </a>
-                </div>
-
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                    <a href="{{ route('koleksi.jenis', 'seni-rupa') }}" class="card-collection d-block text-decoration-none">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-palette"></i>
-                        </div>
-                        <div class="collection-title text-center">Seni Rupa</div>
-                        <div class="collection-count text-center">{{ $jenisKoleksi['Seni Rupa'] }}</div>
-                    </a>
-                </div>
-
-                <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                    <a href="{{ route('koleksi.jenis', 'teknologika') }}" class="card-collection d-block text-decoration-none">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-cogs"></i>
-                        </div>
-                        <div class="collection-title text-center">Teknologika</div>
-                        <div class="collection-count text-center">{{ $jenisKoleksi['Teknologika'] }}</div>
-                    </a>
-                </div>
+                @endforeach
 
                 <!-- Featured Stats -->
                 <div class="col-lg-4 col-md-6">
@@ -362,7 +285,7 @@
                         <div class="text-center p-4">
                             <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
                             <h4 class="fw-bold text-primary">Total Koleksi</h4>
-                            <h2 class="display-4 fw-bold text-dark">{{ array_sum($jenisKoleksi) }}</h2>
+                            <h2 class="display-4 fw-bold text-dark">{{ $jenisKoleksiData->sum('inventarisasis_count') }}</h2>
                             <p class="text-muted">Artefak Terdigitalkan</p>
                         </div>
                     </div>
@@ -380,10 +303,9 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8 text-center">
-                    <img src="{{ asset('assets/img/logo-fr.png') }}" alt="Museum Logo" height="70px" class="logo-footer mb-3">
+                    <img src="{{ asset('assets/img/logo-museum-fr.png') }}" alt="Museum Logo" height="70px" class="logo-footer mb-3">
                     <h4 class="fw-bold mb-3">MUSEUM TANAH DAN PERTANIAN</h4>
                     <p class="mb-4 opacity-75">
-                        Alamat museum
 Jl. Ir. H. Juanda No.98, RT.01/RW.01, Gudang, Kecamatan Bogor Tengah, Kota Bogor, Jawa Barat 16123
                     </p>
                     <div class="social-buttons mb-4">
@@ -414,7 +336,7 @@ Jl. Ir. H. Juanda No.98, RT.01/RW.01, Gudang, Kecamatan Bogor Tengah, Kota Bogor
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // Card hover effects
+    // Efek hover pada kartu koleksi
     document.querySelectorAll('.card-collection').forEach(card => {
         card.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-10px) scale(1.02)';
@@ -425,7 +347,7 @@ Jl. Ir. H. Juanda No.98, RT.01/RW.01, Gudang, Kecamatan Bogor Tengah, Kota Bogor
         });
     });
 
-    // Smooth scroll for navigation
+    // untuk smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();

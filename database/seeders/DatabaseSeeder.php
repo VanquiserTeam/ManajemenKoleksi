@@ -19,8 +19,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-        
+
         $this->call([
+            JenisKoleksiSeeder::class,
             RegistrasiSeeder::class,
             LokasiPenyimpananSeeder::class,
             // InventarisasiSeeder::class, // Disabled karena perlu data registrasi dulu
