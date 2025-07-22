@@ -117,7 +117,7 @@
             position: relative;
         }
         .collection-title {
-            background: linear-gradient(135deg, #27ae60 0%, #e67e22 100%);
+            background: linear-gradient(135deg, #111111 0%, #2b2928 100%);
             color: white;
             margin: 0 15px 15px 15px;
             padding: 10px;
@@ -283,8 +283,8 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="card-collection h-100 d-flex flex-column justify-content-center">
                         <div class="text-center p-4">
-                            <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
-                            <h4 class="fw-bold text-primary">Total Koleksi</h4>
+                            <i class="fas fa-chart-line fa-3x text-secondary mb-3"></i>
+                            <h4 class="fw-bold text-secondary">Total Koleksi</h4>
                             <h2 class="display-4 fw-bold text-dark">{{ $jenisKoleksiData->sum('inventarisasis_count') }}</h2>
                             <p class="text-muted">Artefak Terdigitalkan</p>
                         </div>
