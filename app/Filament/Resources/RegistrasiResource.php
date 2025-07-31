@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\RegistrasiResource\Pages;
 use App\Filament\Resources\RegistrasiResource\RelationManagers;
 use App\Models\Registrasi;
+use App\Exports\RegistrasiExport;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,11 +19,11 @@ class RegistrasiResource extends Resource
     protected static ?string $model = Registrasi::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-plus';
-    
+
     protected static ?string $navigationLabel = 'Registrasi Koleksi';
-    
+
     protected static ?string $pluralLabel = 'Registrasi Koleksi';
-    
+
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -34,7 +35,7 @@ class RegistrasiResource extends Resource
                         Forms\Components\TextInput::make('registrasi_id')
                             ->label('ID Registrasi')
                             ->placeholder('MTP.2020.0001')
-                            ->unique(ignoreRecord: true)
+                            // ->unique(ignoreRecord: true)
                             ->helperText('Format: MTP.Tahun.Nomor Urut (akan auto-generate jika kosong)'),
 
                         Forms\Components\TextInput::make('nama_koleksi')
@@ -102,9 +103,9 @@ class RegistrasiResource extends Resource
                             ->label('Bahan')
                             ->maxLength(255),
 
-                        Forms\Components\TextInput::make('tanah')
-                            ->label('Tanah')
-                            ->maxLength(255),
+                        // Forms\Components\TextInput::make('tanah')
+                        //     ->label('Tanah')
+                        //     ->maxLength(255),
 
                         Forms\Components\TextInput::make('warna')
                             ->label('Warna')
@@ -267,6 +268,17 @@ class RegistrasiResource extends Resource
                             );
                     }),
             ])
+            ->headerActions([
+                Tables\Actions\Action::make('export')
+                    ->label('Export Excel')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->action(function () {
+                        return \Maatwebsite\Excel\Facades\Excel::download(
+                            new RegistrasiExport(),
+                            'registrasi-' . now()->format('Y-m-d') . '.xlsx'
+                        );
+                    }),
+            ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
@@ -291,6 +303,15 @@ class RegistrasiResource extends Resource
                                     throw new \Exception('Tidak dapat menghapus registrasi yang sudah memiliki inventarisasi.');
                                 }
                             }
+                        }),
+                    Tables\Actions\BulkAction::make('export-selected')
+                        ->label('Export Terpilih')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->action(function ($records) {
+                            return \Maatwebsite\Excel\Facades\Excel::download(
+                                new RegistrasiExport($records->pluck('id')),
+                                'registrasi-selected-' . now()->format('Y-m-d') . '.xlsx'
+                            );
                         }),
                 ]),
             ])

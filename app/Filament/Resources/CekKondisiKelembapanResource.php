@@ -6,6 +6,7 @@ use App\Filament\Resources\CekKondisiKelembapanResource\Pages;
 use App\Filament\Resources\CekKondisiKelembapanResource\RelationManagers;
 use App\Models\CekKondisiKelembapan;
 use App\Models\LokasiPenyimpanan;
+use App\Exports\CekKondisiKelembapanExport;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -19,13 +20,13 @@ class CekKondisiKelembapanResource extends Resource
     protected static ?string $model = CekKondisiKelembapan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-beaker';
-    
+
     protected static ?string $navigationLabel = 'Cek Kondisi Kelembapan';
-    
+
     protected static ?string $pluralLabel = 'Cek Kondisi Kelembapan';
-    
+
     protected static ?string $navigationGroup = 'Cek Kondisi';
-    
+
     protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
@@ -75,7 +76,7 @@ class CekKondisiKelembapanResource extends Resource
                                     // Auto-set status dan keterangan berdasarkan kelembapan
                                     $status = CekKondisiKelembapan::determineStatus((float) $state);
                                     $keterangan = CekKondisiKelembapan::getKeteranganByStatus($status);
-                                    
+
                                     $set('status_display', CekKondisiKelembapan::getStatusOptions()[$status]);
                                     $set('keterangan_display', $keterangan);
                                 }
@@ -211,6 +212,17 @@ class CekKondisiKelembapanResource extends Resource
                     ->label('Minggu Ini')
                     ->query(fn (Builder $query): Builder => $query->whereBetween('tanggal_cek', [now()->startOfWeek(), now()->endOfWeek()])),
             ])
+            ->headerActions([
+                Tables\Actions\Action::make('export')
+                    ->label('Export Excel')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->action(function () {
+                        return \Maatwebsite\Excel\Facades\Excel::download(
+                            new CekKondisiKelembapanExport(),
+                            'cek-kondisi-kelembapan-' . now()->format('Y-m-d') . '.xlsx'
+                        );
+                    }),
+            ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
@@ -221,6 +233,15 @@ class CekKondisiKelembapanResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                         ->requiresConfirmation(),
+                    Tables\Actions\BulkAction::make('export-selected')
+                        ->label('Export Terpilih')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->action(function ($records) {
+                            return \Maatwebsite\Excel\Facades\Excel::download(
+                                new CekKondisiKelembapanExport($records->pluck('id')),
+                                'cek-kondisi-kelembapan-selected-' . now()->format('Y-m-d') . '.xlsx'
+                            );
+                        }),
                 ]),
             ])
             ->defaultSort('tanggal_cek', 'desc')

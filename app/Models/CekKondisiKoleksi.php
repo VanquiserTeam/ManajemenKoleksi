@@ -73,7 +73,7 @@ class CekKondisiKoleksi extends Model
             // Update status di inventarisasi jika kondisi berubah dari rusak/dikonservasi ke baik
             $inventarisasi = $cekKondisi->inventarisasi;
             $statusSebelum = $inventarisasi->kondisi_fisik;
-            
+
             if ($cekKondisi->status === 'baik' && in_array($statusSebelum, ['rusak'])) {
                 // Update inventarisasi
                 $inventarisasi->update([
@@ -91,7 +91,7 @@ class CekKondisiKoleksi extends Model
                     'tanggal_perubahan' => $cekKondisi->tanggal_cek,
                     'petugas' => $cekKondisi->nama_petugas,
                 ]);
-            } elseif (in_array($cekKondisi->status, ['rusak', 'hilang'])) {
+            } elseif (in_array($cekKondisi->status, ['rusak', 'hilang', 'dipinjam', 'dikonservasi'])) {
                 // Update inventarisasi untuk status rusak/hilang
                 $inventarisasi->update([
                     'kondisi_fisik' => $cekKondisi->status,

@@ -316,7 +316,7 @@ Jl. Ir. H. Juanda No.98, RT.01/RW.01, Gudang, Kecamatan Bogor Tengah, Kota Bogor
                             <i class="fab fa-instagram"></i>
                         </a>
                         <a href="#" class="btn btn-outline-light me-2">
-                            <i class="fab fa-twitter"></i>
+                            <i class="fab fa-tiktok"></i>
                         </a>
                         <a href="#" class="btn btn-outline-light">
                             <i class="fab fa-youtube"></i>
