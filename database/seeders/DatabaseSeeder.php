@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             RegistrasiSeeder::class,
             LokasiPenyimpananSeeder::class,
             // InventarisasiSeeder::class, // Disabled karena perlu data registrasi dulu
+            LokasiTermohygrometerSeeder::class,
         ]);
     }
 }
